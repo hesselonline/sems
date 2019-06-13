@@ -5,7 +5,7 @@ API adaption heavily inspired by https://github.com/markruys/gw2pvo.
 
 Installation of this component is done by copying the sensor.py, __init__.py and manifest.json files to [homeassistant_config]/custom_components/sems folder.
 
-In configuration.yaml add the sensor ass follows:
+In configuration.yaml add the sensor as follows:
 
     - platform: sems                                                                                                                             username: yourusernamehere
       password: secretpasswordfromsemsportal
