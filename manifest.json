@@ -1,0 +1,8 @@
+{
+    "domain": "sems",
+    "name": "Goodwe SEMS API",
+    "documentation": "https://github.com/hesselonline/sems",
+    "dependencies": [],
+    "codeowners": ["hesselonline"],
+    "requirements": []
+  }

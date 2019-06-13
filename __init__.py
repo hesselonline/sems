@@ -1,0 +1,1 @@
+"""GoodWe SEMS API Component."""
