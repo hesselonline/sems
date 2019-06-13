@@ -7,7 +7,8 @@ Installation of this component is done by copying the sensor.py, __init__.py and
 
 In configuration.yaml add the sensor as follows:
 
-    - platform: sems                                                                                                                             username: yourusernamehere
+    - platform: sems 
+      username: yourusernamehere
       password: secretpasswordfromsemsportal
       station_id: stationidhere
       name: (optional, name for sensor)
