@@ -69,7 +69,8 @@ class GoodWeApi:
             'emonth_kwh' : inverterData['emonth'],
             'grid_voltage' : self.parseValue(inverterData['output_voltage'], 'V'),
             'latitude' : data['info'].get('latitude'),
-            'longitude' : data['info'].get('longitude')
+            'longitude' : data['info'].get('longitude'),
+            'temperature' : inverterData['tempperature']
         }
 
           
