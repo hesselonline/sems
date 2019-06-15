@@ -83,15 +83,7 @@ async def async_get_sems_data(event_time):
                      'icon':'mdi:flash',
                      'state_topic':'aurum/sensors'
                     }
-
-
-
-
-def setup_platform(hass, config, add_devices, discovery_info=None):
-    """Setup the GoodWe SEMS portal scraper platform."""
-    # Add devices
-    add_devices([SemsSensor(config[CONF_NAME], config)], True)
-
+  
 class GoodWeApi:
 
     def __init__(self, system_id, account, password):
@@ -163,40 +155,6 @@ class GoodWeApi:
         except ValueError as exp:
             _LOGGER.warning(exp)
             return 0
-
-
-class SemsSensor(Entity):
-    """Representation of the SEMS portal."""
-
-    def __init__(self, name, config):
-        """Initialize a SEMS sensor."""
-        # self.rest = rest
-        self._name = name
-        self._config = config
-        self._attributes = {}
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return self._name
-    
-    @property
-    def unit_of_measurement(self):
-        "Return the unit of measurement of the sensor"
-        return POWER_WATT
-
-    @property
-    def state(self):
-        return self._attributes['pgrid_w']
-    
-    @property
-    def icon(self):
-        return 'mdi:solar-power'
-
-    @property
-    def device_state_attributes(self):
-        """Return the state attributes of the monitored installation."""
-        return self._attributes
 
     def update(self):
         """Get the latest data from the SEMS API and updates the state."""
