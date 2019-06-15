@@ -1,6 +1,9 @@
-""""Home Assistant component for accessing the GoodWe SEMS Portal API.
+""""
+Home Assistant component for accessing the GoodWe SEMS Portal API.
     Adapted from https://github.com/TimSoethout/goodwe-sems-home-assistant, but altered to use the SEMS API.
-    API adaption heavily inspired by https://github.com/markruys/gw2pvo."""
+    API adaption heavily inspired by https://github.com/markruys/gw2pvo.
+    Adapted furthermore using MQTT messages using HA-discovery to create separate sensors.
+"""
 
 import json
 import logging
@@ -9,26 +12,77 @@ from datetime import datetime, timedelta
 import requests
 import logging
 import voluptuous as vol
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, CONF_NAME, POWER_WATT
+
+from homeassistant.const import (
+    CONF_PASSWORD, CONF_USERNAME, 
+    CONF_SCAN_INTERVAL, EVENT_HOMEASSISTANT_START, EVENT_HOMEASSISTANT_STOP)
+from homeassistant.helpers.event import async_track_time_interval
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
 
-DOMAIN = "sems"
-
-CONF_STATION_ID = 'station_id'
-
-DEFAULTNAME = "SEMS Portal"
-
-# Validation of the user's configuration
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
-    vol.Optional(CONF_NAME, default = DEFAULTNAME): cv.string,
-    vol.Required(CONF_USERNAME): cv.string,
-    vol.Required(CONF_PASSWORD): cv.string,
-    vol.Required(CONF_STATION_ID): cv.string
-})
+__version__ = 0.1.0
 
 _LOGGER = logging.getLogger(__name__)
+
+REGISTERED = 0
+
+CONF_BROKER = 'broker'
+CONF_STATION_ID = 'station_id'
+CONF_BROKER_USERNAME = 'broker_user'
+CONF_BROKER_password = 'broker_pw'
+
+DEFAULTNAME = "SEMS Portal"
+DOMAIN = 'sems'
+
+SCAN_INTERVAL = timedelta(seconds=60)
+
+CONFIG_SCHEMA = vol.Schema({
+    DOMAIN: vol.Schema({
+        vol.Required(CONF_BROKER): cv.string,
+        vol.Required(CONF_BROKER_USERNAME): cv.string,
+        vol.Required(CONF_BROKER_PASSWORD): cv.string,
+        vol.Required(CONF_USERNAME): cv.string,
+        vol.Required(CONF_PASSWORD): cv.string,
+        vol.Required(CONF_STATION_ID): cv.string
+        vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL):
+            cv.time_period,
+    }),
+}, extra=vol.ALLOW_EXTRA)
+
+async def async_setup(hass, config):
+    """Initialize the SEMS MQTT consumer"""
+    conf = config[DOMAIN]
+    broker = conf.get(CONF_BROKER)
+    broker_user = conf.get(CONF_BROKER_USERNAME)
+    broker_pw = conf.get(CONF_BROKER_PASSWORD)
+    username = conf.get(CONF_USERNAME)
+    password = conf.get(CONF_PASSWORD)
+    station_id = conf.get(CONF_STATION_ID)
+    scan_interval = conf.get(CONF_SCAN_INTERVAL)
+
+   client_id = 'HomeAssistant'
+   port = 1883
+   keepalive = 55
+
+   mqttc = mqtt.Client(client_id, protocol=mqtt.MQTTv311)
+   mqttc.username_pw_set(boker_user, password=broker_pw)
+   mqttc.connect(broker, port=port, keepalive=keepalive)
+
+   async def async_stop_sems(event):
+      """Stop the SEMS MQTT component."""
+      mqttc.disconnect()
+
+   hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, async_stop_sems)
+
+async def async_get_sems_data(event_time):   
+      """Get the topics from the SEMS API and send to the MQTT Broker."""
+      payload_powerBattery = {
+                     'name':'aurum_powerBattery',
+                     'unit_of_meas':'W',
+                     'value_template':'{{ value_json.powerBattery}}',
+                     'icon':'mdi:flash',
+                     'state_topic':'aurum/sensors'
+                    }
 
 
 
