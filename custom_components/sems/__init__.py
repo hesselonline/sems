@@ -1,19 +1,19 @@
 """"
 Home Assistant component for accessing the GoodWe SEMS Portal API.
     Adapted from https://github.com/TimSoethout/goodwe-sems-home-assistant, but altered to use the SEMS API.
-    API adaption heavily inspired by https://github.com/markruys/gw2pvo.
+    API adaption by hesselonline, heavily inspired by https://github.com/markruys/gw2pvo.
     Adapted furthermore using MQTT messages using HA-discovery to create separate sensors.
-
+    
 Configuration (example):
 
 sems:
   broker: mqtt broker IP
   broker_user: mqtt broker login
   broker_pw: mqtt broker password
-  username: sems login (full email)
+  username: sems login (email)
   password: sems password
   station_id: your station ID
-  scan_interval: 30 (optional, default is 60 seconds)
+  scan_interval: 30 #optional,default is 60 seconds
 
 """
 
@@ -152,7 +152,7 @@ async def async_setup(hass, config):
                 data = getCurrentReadings(station)
 
                 payload_type =          {
-                                        'name':'inverter_type',
+                                        'name':'sems_inverter_type',
                                         'value_template':'{{ value_json.type }}',
                                         'icon':'mdi:solar-power',
                                         'state_topic':'sems/sensors',
@@ -165,7 +165,7 @@ async def async_setup(hass, config):
                                                         }
                                         }    
                 payload_status =            {
-                                        'name':'inverter_status',
+                                        'name':'sems_inverter_status',
                                         'value_template':'{{ value_json.status }}',
                                         'icon':'mdi:lan-connect',
                                         'state_topic':'sems/sensors',
@@ -178,7 +178,7 @@ async def async_setup(hass, config):
                                                         }
                                         }
                 payload_pgrid_w =           {
-                                        'name':'solar_power',
+                                        'name':'sems_solar_power',
                                         'unit_of_meas':'W',
                                         'value_template':'{{ value_json.pgrid_w }}',
                                         'icon':'mdi:solar-power',
@@ -192,7 +192,7 @@ async def async_setup(hass, config):
                                                         }
                                         }
                 payload_temperature =       {
-                                        'name':'inverter_temperature',
+                                        'name':'sems_inverter_temperature',
                                         'unit_of_meas':'°C',
                                         'value_template':'{{ value_json.temperature }}',
                                         'icon':'mdi:thermometer',
@@ -206,7 +206,7 @@ async def async_setup(hass, config):
                                                         }
                                         }
                 payload_eday_kwh =          {
-                                        'name':'produced_today',
+                                        'name':'sems_produced_today',
                                         'unit_of_meas':'kWh',
                                         'value_template':'{{ value_json.eday_kwh }}',
                                         'icon':'mdi:flash',
@@ -220,7 +220,7 @@ async def async_setup(hass, config):
                                                         }
                                         }
                 payload_etotal_kwh =        {
-                                        'name':'produced_total',
+                                        'name':'sems_produced_total',
                                         'unit_of_meas':'kWh',
                                         'value_template':'{{ value_json.etotal_kwh }}',
                                         'icon':'mdi:flash',
@@ -234,7 +234,7 @@ async def async_setup(hass, config):
                                                         }
                                         }
                 payload_emonth_kwh =        {
-                                        'name':'produced_this_month',
+                                        'name':'sems_produced_this_month',
                                         'unit_of_meas':'kWh',
                                         'value_template':'{{ value_json.emonth_kwh }}',
                                         'icon':'mdi:flash',
@@ -248,7 +248,7 @@ async def async_setup(hass, config):
                                                         }
                                         }
                 payload_grid_voltage =      {
-                                        'name':'grid_voltage',
+                                        'name':'sems_grid_voltage',
                                         'unit_of_meas':'VAC',
                                         'value_template':'{{ value_json.grid_voltage }}',
                                         'icon':'mdi:current-ac',
@@ -262,7 +262,7 @@ async def async_setup(hass, config):
                                                         }
                                         }
                 payload_grid_frequency =    {
-                                        'name':'grid_frequency',
+                                        'name':'sems_grid_frequency',
                                         'unit_of_meas':'',
                                         'value_template':'{{ value_json.grid_frequency }}',
                                         'icon':'mdi:current-ac',
