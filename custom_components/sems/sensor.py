@@ -12,6 +12,7 @@ from datetime import datetime, timedelta
 import requests
 import logging
 import voluptuous as vol
+import paho.mqtt.client as mqtt
 
 from homeassistant.const import (
     CONF_PASSWORD, CONF_USERNAME, 
@@ -65,7 +66,7 @@ async def async_setup(hass, config):
    keepalive = 55
 
    mqttc = mqtt.Client(client_id, protocol=mqtt.MQTTv311)
-   mqttc.username_pw_set(boker_user, password=broker_pw)
+   mqttc.username_pw_set(broker_user, password=broker_pw)
    mqttc.connect(broker, port=port, keepalive=keepalive)
 
    async def async_stop_sems(event):
@@ -93,45 +94,34 @@ class GoodWeApi:
         self.token = '{"version":"","client":"web","language":"en"}'
         self.global_url = 'https://eu.semsportal.com/api/'
         self.base_url = self.global_url
-        self.status = { -1 : 'Offline', 1 : 'Normal' }
+        self.status = { -1 : 'Offline', 1 : 'Online' }
 
     def getCurrentReadings(self):
         ''' Download the most recent readings from the GoodWe API. '''
-
-        payload = {
-            'powerStationId' : self.system_id
-        }
-
-        # goodwe_server
+        payload = {'powerStationId' : self.system_id}
         data = self.call("v1/PowerStation/GetMonitorDetailByPowerstationId", payload)
-
-        inverterData = data['inverter'][0]
-
+        inverterData = data['inverter'][0]['invert_full']
         result = {
-            'status'  : self.status[inverterData['status']],
-            'pgrid_w' : inverterData['out_pac'],
-            'eday_kwh' : inverterData['eday'],
-            'etotal_kwh' : inverterData['etotal'],
-            'emonth_kwh' : inverterData['emonth'],
-            'grid_voltage' : self.parseValue(inverterData['output_voltage'], 'V'),
-            'latitude' : data['info'].get('latitude'),
-            'longitude' : data['info'].get('longitude'),
-            'temperature' : inverterData['tempperature']
-        }
-
-          
+                'type'  : inverterData['model_type'],
+                'status'  : self.status[inverterData['status']],
+                'pgrid_w' : str(inverterData['pac']),
+                'temperature' : str(inverterData['tempperature']),
+                'eday_kwh' : str(inverterData['eday']),
+                'etotal_kwh' : str(inverterData['etotal']),
+                'emonth_kwh' : str(inverterData['thismonthetotle']+inverterData['eday']),
+                'grid_voltage' : str(inverterData['vac1']),
+                'grd_frequency' : str(inverterData['fac1'])
+                 }
         return result
 
     def call(self, url, payload):
         for i in range(1, 4):
             try:
                 headers = {'Token': self.token }
-
                 r = requests.post(self.base_url + url, headers=headers, data=payload, timeout=10)
                 r.raise_for_status()
                 data = r.json()
                 _LOGGER.debug(data)
-
                 if data['msg'] == 'success' and data['data'] is not None:
                     return data['data']
                 else:
@@ -146,7 +136,6 @@ class GoodWeApi:
             time.sleep(i ** 3)
         else:
             _LOGGER.error("Failed to call GoodWe API")
-
         return {}
 
     def parseValue(self, value, unit):
@@ -156,23 +145,145 @@ class GoodWeApi:
             _LOGGER.warning(exp)
             return 0
 
-    def update(self):
-        """Get the latest data from the SEMS API and updates the state."""
-        _LOGGER.debug("update called.")
-        
-        try:
-          station = self._config[CONF_STATION_ID]
-          user = self._config[CONF_USERNAME]
-          password = self._config[CONF_PASSWORD]
+_LOGGER.debug("update called.")
 
-          gw = GoodWeApi(station, user, password)
-          data = gw.getCurrentReadings()
-        
-          for key, value in data.items():
-                if(key is not None and value is not None):
-                    self._attributes[key] = value
-                    _LOGGER.debug("Updated attribute %s: %s", key, value)
-        except Exception as exception:
-            _LOGGER.error(
-                "Unable to fetch data from SEMS. %s", exception)
+global REGISTERED
+if REGISTERED == 0:
+    try:
+        station = self._config[CONF_STATION_ID]
+        user = self._config[CONF_USERNAME]
+        password = self._config[CONF_PASSWORD]
+        gw = GoodWeApi(station, user, password)
+        data = gw.getCurrentReadings()
+    
+        payload_type                {
+                                'name':'inverter_type',
+                                'value_template':'{{ value_json.type }}',
+                                'icon':'mdi:flash',
+                                'state_topic':'sems/sensors',
+                                'unique_id':'sems_inverter_type_sensor',
+                                    'device':   {
+                                                'identifiers':'Goodwe Inverter',
+                                                'name':'GoodWe Inverter',
+                                                'model':data['type'],
+                                                'manufacturer':'GoodWe'
+                                                }
+                                }    
+        payload_status =            {
+                                'name':'inverter_status',
+                                'value_template':'{{ value_json.status }}',
+                                'icon':'mdi:flash',
+                                'state_topic':'sems/sensors',
+                                'unique_id':'sems_inverter_status_sensor',
+                                    'device':   {
+                                                'identifiers':'Goodwe Inverter',
+                                                'name':'GoodWe Inverter',
+                                                'model':data['type'],
+                                                'manufacturer':'GoodWe'
+                                                }
+                                }
+        payload_pgrid_w =           {
+                                'name':'solar_power',
+                                'unit_of_meas':'W',
+                                'value_template':'{{ value_json.pgrid_w }}',
+                                'icon':'mdi:flash',
+                                'state_topic':'sems/sensors',
+                                'unique_id':'sems_solar_power_sensor',
+                                    'device':   {
+                                                'identifiers':'Goodwe Inverter',
+                                                'name':'GoodWe Inverter',
+                                                'model':data['type'],
+                                                'manufacturer':'GoodWe'
+                                                }
+                                }
+        payload_temperature =       {
+                                'name':'inverter_temperature',
+                                'unit_of_meas':'°C',
+                                'value_template':'{{ value_json.temperature }}',
+                                'icon':'mdi:flash',
+                                'state_topic':'sems/sensors',
+                                'unique_id':'sems_inverter_temperature_sensor',
+                                    'device':   {
+                                                'identifiers':'Goodwe Inverter',
+                                                'name':'GoodWe Inverter',
+                                                'model':data['type'],
+                                                'manufacturer':'GoodWe'
+                                                }
+                                }
+        payload_eday_kwh =          {
+                                'name':'produced_today',
+                                'unit_of_meas':'kWh',
+                                'value_template':'{{ value_json.eday_kwh }}',
+                                'icon':'mdi:flash',
+                                'state_topic':'sems/sensors',
+                                'unique_id':'sems_produced_today_sensor',
+                                    'device':   {
+                                                'identifiers':'Goodwe Inverter',
+                                                'name':'GoodWe Inverter',
+                                                'model':data['type'],
+                                                'manufacturer':'GoodWe'
+                                                }
+                                }
+        payload_etotal_kwh =        {
+                                'name':'produced_total',
+                                'unit_of_meas':'kWh',
+                                'value_template':'{{ value_json.etotal_kwh }}',
+                                'icon':'mdi:flash',
+                                'state_topic':'sems/sensors',
+                                'unique_id':'sems_produced_total_sensor',
+                                    'device':   {
+                                                'identifiers':'Goodwe Inverter',
+                                                'name':'GoodWe Inverter',
+                                                'model':data['type'],
+                                                'manufacturer':'GoodWe'
+                                                }
+                                }
+        payload_emonth_kwh =        {
+                                'name':'produced_this_month',
+                                'unit_of_meas':'kWh',
+                                'value_template':'{{ value_json.emonth_kwh }}',
+                                'icon':'mdi:flash',
+                                'state_topic':'sems/sensors',
+                                'unique_id':'sems_produced_this_month_sensor',
+                                    'device':   {
+                                                'identifiers':'Goodwe Inverter',
+                                                'name':'GoodWe Inverter',
+                                                'model':data['type'],
+                                                'manufacturer':'GoodWe'
+                                                }
+                                }
+        payload_grid_voltage =      {
+                                'name':'grid_voltage',
+                                'unit_of_meas':'VAC',
+                                'value_template':'{{ value_json.grid_voltage }}',
+                                'icon':'mdi:flash',
+                                'state_topic':'sems/sensors',
+                                'unique_id':'sems_grid_voltage_sensor',
+                                    'device':   {
+                                                'identifiers':'Goodwe Inverter',
+                                                'name':'GoodWe Inverter',
+                                                'model':data['type'],
+                                                'manufacturer':'GoodWe'
+                                                }
+                                }
+        payload_grid_frequency =    {
+                                'name':'grid_frequency',
+                                'unit_of_meas':'',
+                                'value_template':'{{ value_json.grid_frequency }}',
+                                'icon':'mdi:flash',
+                                'state_topic':'sems/sensors',
+                                'unique_id':'sems_grid_frequency_sensor',
+                                    'device':   {
+                                                'identifiers':'Goodwe Inverter',
+                                                'name':'GoodWe Inverter',
+                                                'model':data['type'],
+                                                'manufacturer':'GoodWe'
+                                                }
+                                }
+
+        data=json.dumps(data)
+        data = data.replace(": ", ":")
+        _LOGGER.debug("Updated sems data")
+    except Exception as exception:
+        _LOGGER.error("Unable to fetch data from SEMS. %s", exception)
     
