@@ -145,6 +145,7 @@ class GoodWeApi:
             _LOGGER.warning(exp)
             return 0
 
+"""Get the topic-data from the SEMS API and send to the MQTT Broker."""
 _LOGGER.debug("update called.")
 
 global REGISTERED
@@ -280,10 +281,34 @@ if REGISTERED == 0:
                                                 'manufacturer':'GoodWe'
                                                 }
                                 }
-
-        data=json.dumps(data)
-        data = data.replace(": ", ":")
         _LOGGER.debug("Updated sems data")
     except Exception as exception:
         _LOGGER.error("Unable to fetch data from SEMS. %s", exception)
-    
+    else:
+    for key,value in data.items():
+        if(key is not None and value is not None):
+            parameter = key
+            payload = "payload_"+str(parameter)
+            payload = locals()[payload]
+            payload = json.dumps(payload)
+            mqttc.publish('homeassistant/sensor/sems/{}/config'.format(parameter), payload, qos=0, retain=True)
+     REGISTERED = 1
+else:
+    """Get the latest data from the SEMS API and send to the MQTT Broker."""
+    try:
+        station = self._config[CONF_STATION_ID]
+        user = self._config[CONF_USERNAME]
+        password = self._config[CONF_PASSWORD]
+        gw = GoodWeApi(station, user, password)
+        data = gw.getCurrentReadings()
+        _LOGGER.debug("Updated sems data")
+    except Exception as exception:
+        _LOGGER.error("Unable to fetch data from SEMS. %s", exception)
+    else:
+        payload = json.dumps(data)
+        payload = payload.replace(": ", ":")
+        mqttc.publish('sems/sensors', payload, qos=0, retain=True)
+
+   async_track_time_interval(hass, async_get_aurum_data, scan_interval)
+
+   return True
