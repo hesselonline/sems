@@ -10,10 +10,10 @@ sems:
   broker: mqtt broker IP
   broker_user: mqtt broker login
   broker_pw: mqtt broker password
-  client: HA_client_name (default is HomeAssistant, if you have more active clients, use another ID)
   username: sems login (email)
   password: sems password
   station_id: your station ID
+  client: MQTT cient-id (default is 'sems2mqtt')
   scan_interval: 30 #optional,default is 60 seconds
 
 """
@@ -29,7 +29,7 @@ import paho.mqtt.client as mqtt
 
 from homeassistant.const import (
     CONF_PASSWORD, CONF_USERNAME, 
-    CONF_SCAN_INTERVAL, EVENT_HOMEASSISTANT_START, EVENT_HOMEASSISTANT_STOP)
+    CONF_SCAN_INTERVAL, EVENT_HOMEASSISTANT_STOP)
 from homeassistant.helpers.event import async_track_time_interval
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
@@ -38,17 +38,15 @@ __version__ = '0.1.1'
 
 _LOGGER = logging.getLogger(__name__)
 
-REGISTERED = 0
-
 CONF_BROKER = 'broker'
-CONF_STATION_ID = 'station_id'
 CONF_BROKER_USERNAME = 'broker_user'
 CONF_BROKER_PASSWORD = 'broker_pw'
-CONF_CLIENT_ID = 'client_id'
+CONF_STATION_ID = 'station_id'
+CONF_CLIENT = 'client'
 
+DEFAULT_CL = 'sems2mqtt'
 DOMAIN = 'sems'
-DEFAULT_CLIENT_ID = "HomeAssistant'
-
+REGISTERED = 0
 SCAN_INTERVAL = timedelta(seconds=60)
 
 CONFIG_SCHEMA = vol.Schema({
@@ -56,13 +54,12 @@ CONFIG_SCHEMA = vol.Schema({
         vol.Required(CONF_BROKER): cv.string,
         vol.Required(CONF_BROKER_USERNAME): cv.string,
         vol.Required(CONF_BROKER_PASSWORD): cv.string,
-        vol.Optional(CONF_CLIENT_ID, default=DEFAULT_CLIENT_ID): cv.string,
         vol.Required(CONF_USERNAME): cv.string,
         vol.Required(CONF_PASSWORD): cv.string,
         vol.Required(CONF_STATION_ID): cv.string,
-        vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL):
-            cv.time_period,
-    }),
+        vol.Optional(CONF_CLIENT, default=DEFAULT_CL): cv.string,
+        vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL): cv.time_period,
+        }),
 }, extra=vol.ALLOW_EXTRA)
 
 async def async_setup(hass, config):
@@ -71,16 +68,17 @@ async def async_setup(hass, config):
     broker = conf.get(CONF_BROKER)
     broker_user = conf.get(CONF_BROKER_USERNAME)
     broker_pw = conf.get(CONF_BROKER_PASSWORD)
-    client = conf.get(CONF_CLIENT_ID)
     username = conf.get(CONF_USERNAME)
     password = conf.get(CONF_PASSWORD)
     station_id = conf.get(CONF_STATION_ID)
+    client = conf.get(CONF_CLIENT)
     scan_interval = conf.get(CONF_SCAN_INTERVAL)
 
+    client_id = client
     port = 1883
     keepalive = 55
 
-    mqttc = mqtt.Client(client, protocol=mqtt.MQTTv311)
+    mqttc = mqtt.Client(client_id, protocol=mqtt.MQTTv311)
     mqttc.username_pw_set(broker_user, password=broker_pw)
     mqttc.connect(broker, port=port, keepalive=keepalive)
 
