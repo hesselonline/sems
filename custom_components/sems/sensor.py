@@ -47,7 +47,7 @@ class GoodWeApi:
         self.token = '{"version":"","client":"web","language":"en"}'
         self.global_url = 'https://eu.semsportal.com/api/'
         self.base_url = self.global_url
-        self.status = { -1 : 'Offline', 1 : 'Normal' }
+        self.status = { -1 : 'Offline', 0 : 'Waiting', 1 : 'Normal' }
 
     def getCurrentReadings(self):
         ''' Download the most recent readings from the GoodWe API. '''
@@ -60,9 +60,10 @@ class GoodWeApi:
         data = self.call("v1/PowerStation/GetMonitorDetailByPowerstationId", payload)
 
         inverterData = data['inverter'][0]
+        
 
         result = {
-            'status'  : self.status[inverterData['status']],
+            'status'  : self.status.get(inverterData['status'],'Unknown'),
             'pgrid_w' : inverterData['out_pac'],
             'eday_kwh' : inverterData['eday'],
             'etotal_kwh' : inverterData['etotal'],
