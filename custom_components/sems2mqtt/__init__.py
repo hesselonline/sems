@@ -34,7 +34,7 @@ from homeassistant.helpers.event import async_track_time_interval
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 _LOGGER = logging.getLogger(__name__)
 
