@@ -1,14 +1,14 @@
-# GoodWe SEMS Portal Component for Home Assistant
+# GoodWe SEMS Portal MQTT Component for Home Assistant
 Home Assistant component for accessing the GoodWe SEMS Portal API.
-Adapted from https://github.com/TimSoethout/goodwe-sems-home-assistant, which I used for a few months, but altered to use the SEMS API.
+Adapted from https://github.com/TimSoethout/goodwe-sems-home-assistant but altered to use the SEMS API.
 API adaption by hesselonline, heavily inspired by https://github.com/markruys/gw2pvo.
-Adapted furthermore using MQTT messages using HA-discovery to create separate sensors.
+Adapted furthermore by bouwew, using MQTT messages using HA-discovery to create separate sensors.
 
 NOTE: this component requires an MQTT-broker to be present in your network.
 There is one available in the Hassio Official Add-ons.
 
-Installation of this component is done by copying the files ```__init__.py``` and manifest.json files to the
-[homeassistant_config]/custom_components/sems folder.
+Installation of this component is done by copying the files ```__init__.py``` and manifest.json to the
+[homeassistant_config]/custom_components/sems2mqtt folder.
 
 In configuration.yaml add the custom_component as follows:
 ```
@@ -23,7 +23,7 @@ sems2mqtt:
   scan_interval: 30             (optional, default is 60 seconds)
 ```
 
-This component use MQTT-disovery to find the sensors. The various parameters collected from the API will be shown as separate sensors, not as one sensor with many attributes.
+This component use MQTT-disovery to find the sensors. The various parameters collected from the API will be shown as separate sensors, not as one sensor with several attributes.
 
 <br>
 Station ID can be found by logging on to the SEMS portal (part of URL after https://www.semsportal.com/PowerStation/PowerStatusSnMin/).
