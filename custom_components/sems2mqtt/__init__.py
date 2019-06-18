@@ -45,7 +45,7 @@ CONF_STATION_ID = 'station_id'
 CONF_CLIENT = 'client'
 
 DEFAULT_CL = 'sems2mqtt'
-DOMAIN = 'sems'
+DOMAIN = 'sems2mqtt'
 REGISTERED = 0
 SCAN_INTERVAL = timedelta(seconds=60)
 
