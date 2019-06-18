@@ -12,7 +12,7 @@ Installation of this component is done by copying the files ```__init__.py``` an
 
 In configuration.yaml add the custom_component as follows:
 ```
-sems:
+sems2mqtt:
   broker: 192.168.1.10          mqtt broker IP
   broker_user: username         mqtt broker login
   broker_pw: password1          mqtt broker password
