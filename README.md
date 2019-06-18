@@ -23,6 +23,8 @@ sems:
   scan_interval: 30             (optional, default is 60 seconds)
 ```
 
+This component use MQTT-disovery to find the sensors. The various parameters collected from the API will be shown as separate sensors, not as one sensor with many attributes.
+
 <br>
 Station ID can be found by logging on to the SEMS portal (part of URL after https://www.semsportal.com/PowerStation/PowerStatusSnMin/).
 
