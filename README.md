@@ -4,7 +4,10 @@ Adapted from https://github.com/TimSoethout/goodwe-sems-home-assistant, which I 
 API adaption by hesselonline, heavily inspired by https://github.com/markruys/gw2pvo.
 Adapted furthermore using MQTT messages using HA-discovery to create separate sensors.
 
-Installation of this component is done by copying the __init__.py and manifest.json files to 
+NOTE: this component requires an MQTT-broker to be present in your network.
+There is one available in the Hassio Official Add-ons.
+
+Installation of this component is done by copying the files ```__init__.py``` and manifest.json files to the
 [homeassistant_config]/custom_components/sems folder.
 
 In configuration.yaml add the custom_component as follows:
@@ -16,7 +19,8 @@ sems:
   username: sems login (full email)
   password: sems password
   station_id: your station ID
-  scan_interval: 30 (optional, default is 60 seconds)
+  client: sems2mqtt   (optional, MQTT cient-id, default is 'sems2mqtt')
+  scan_interval: 30   (optional, default is 60 seconds)
 
 <br>
 Station ID can be found by logging on to the SEMS portal (part of URL after https://www.semsportal.com/PowerStation/PowerStatusSnMin/).
