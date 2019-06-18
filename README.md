@@ -11,16 +11,17 @@ Installation of this component is done by copying the files ```__init__.py``` an
 [homeassistant_config]/custom_components/sems folder.
 
 In configuration.yaml add the custom_component as follows:
-
+```
 sems:
-  broker: mqtt broker IP
-  broker_user: mqtt broker login
-  broker_pw: mqtt broker password
-  username: sems login (full email)
-  password: sems password
-  station_id: your station ID
-  client: sems2mqtt   (optional, MQTT cient-id, default is 'sems2mqtt')
-  scan_interval: 30   (optional, default is 60 seconds)
+  broker: 192.168.1.10          mqtt broker IP
+  broker_user: username         mqtt broker login
+  broker_pw: password1          mqtt broker password
+  username: john.doe@gmail.com  sems login (full email)
+  password: password2           sems password
+  station_id: your-station-ID   see remark below
+  client: sems2mqtt             (optional, MQTT cient-id, default is 'sems2mqtt')
+  scan_interval: 30             (optional, default is 60 seconds)
+```
 
 <br>
 Station ID can be found by logging on to the SEMS portal (part of URL after https://www.semsportal.com/PowerStation/PowerStatusSnMin/).
