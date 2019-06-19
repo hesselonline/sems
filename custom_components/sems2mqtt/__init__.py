@@ -34,7 +34,7 @@ from homeassistant.helpers.event import async_track_time_interval
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -93,7 +93,7 @@ async def async_setup(hass, config):
 
         def getCurrentReadings(station_id):
             ''' Download the most recent readings from the GoodWe API. '''
-            status = { -1 : 'Offline', 1 : 'Online' }
+            status = { -1 : 'Offline', 0 : 'Waiting', 1 : 'Online' }
             payload = {'powerStationId' : station_id}
             data = call("v1/PowerStation/GetMonitorDetailByPowerstationId", payload)
             inverterData = data['inverter'][0]['invert_full']
