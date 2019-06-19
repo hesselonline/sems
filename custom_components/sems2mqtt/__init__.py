@@ -34,7 +34,7 @@ from homeassistant.helpers.event import async_track_time_interval
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
 
-__version__ = '0.1.3'
+__version__ = '0.1.4'
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -264,7 +264,7 @@ async def async_setup(hass, config):
                                         }
                 payload_grid_frequency =    {
                                         'name':'sems_grid_frequency',
-                                        'unit_of_meas':'',
+                                        'unit_of_meas':'Hz',
                                         'value_template':'{{ value_json.grid_frequency }}',
                                         'icon':'mdi:current-ac',
                                         'state_topic':'sems/sensors',
