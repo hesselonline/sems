@@ -14,7 +14,7 @@ sems2mqtt:
   password: sems password
   station_id: your station ID
   client: MQTT cient-id (default is 'sems2mqtt')
-  scan_interval: 30 #optional,default is 60 seconds
+  scan_interval: 150 #optional,default is 60 seconds
 """
 
 import json
@@ -33,7 +33,7 @@ from homeassistant.helpers.event import async_track_time_interval
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
 
-__version__ = '0.1.5'
+__version__ = '0.1.6'
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -57,8 +57,9 @@ CONFIG_SCHEMA = vol.Schema({
         vol.Required(CONF_PASSWORD): cv.string,
         vol.Required(CONF_STATION_ID): cv.string,
         vol.Optional(CONF_CLIENT, default=DEFAULT_CL): cv.string,
-        vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL): cv.time_period,
-        }),
+        vol.Optional(CONF_SCAN_INTERVAL, default=SCAN_INTERVAL):
+            cv.time_period,
+    }),
 }, extra=vol.ALLOW_EXTRA)
 
 async def async_setup(hass, config):
