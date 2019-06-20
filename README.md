@@ -20,10 +20,10 @@ sems2mqtt:
   password: password2           sems password
   station_id: your-station-ID   see remark below
   client: sems2mqtt             (optional, MQTT cient-id, default is 'sems2mqtt')
-  scan_interval: 150            (optional, default is 300 seconds, keep to )
+  scan_interval: 150            (optional, default is 300 seconds, keep to 300 seconds or less!)
 ```
 
-This component use MQTT-disovery to find the sensors. The various parameters collected from the API will be shown as separate sensors, not as one sensor with several attributes. The sensors will show up 
+This component use MQTT-disovery to find the sensors. The various parameters collected from the API will be shown as separate sensors, not as one sensor with several attributes. The sensors will show up once one scan_interval has passed.
 
 <br>
 Station ID can be found by logging on to the SEMS portal (part of URL after https://www.semsportal.com/PowerStation/PowerStatusSnMin/).
