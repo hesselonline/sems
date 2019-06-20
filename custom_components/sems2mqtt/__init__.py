@@ -15,7 +15,6 @@ sems2mqtt:
   station_id: your station ID
   client: MQTT cient-id (default is 'sems2mqtt')
   scan_interval: 30 #optional,default is 60 seconds
-
 """
 
 import json
@@ -34,7 +33,7 @@ from homeassistant.helpers.event import async_track_time_interval
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
 
-__version__ = '0.1.4'
+__version__ = '0.1.5'
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -142,144 +141,143 @@ async def async_setup(hass, config):
     
         """Get the topic-data from the SEMS API and send to the MQTT Broker."""
         _LOGGER.debug("update called.")
-
         global REGISTERED
-        if REGISTERED == 0:
-            try:
-                account = username
-                station = station_id
-                user = username
+        try:
+            account = username
+            station = station_id
+            user = username
 
-                data = getCurrentReadings(station)
+            data = getCurrentReadings(station)
 
-                payload_type =          {
-                                        'name':'sems_inverter_type',
-                                        'value_template':'{{ value_json.type }}',
-                                        'icon':'mdi:solar-power',
-                                        'state_topic':'sems/sensors',
-                                        'unique_id':'sems_inverter_type_sensor',
-                                            'device':   {
-                                                        'identifiers':'Goodwe Inverter',
-                                                        'name':'GoodWe Inverter',
-                                                        'model':data['type'],
-                                                        'manufacturer':'GoodWe'
-                                                        }
-                                        }    
-                payload_status =            {
-                                        'name':'sems_inverter_status',
-                                        'value_template':'{{ value_json.status }}',
-                                        'icon':'mdi:lan-connect',
-                                        'state_topic':'sems/sensors',
-                                        'unique_id':'sems_inverter_status_sensor',
-                                            'device':   {
-                                                        'identifiers':'Goodwe Inverter',
-                                                        'name':'GoodWe Inverter',
-                                                        'model':data['type'],
-                                                        'manufacturer':'GoodWe'
-                                                        }
-                                        }
-                payload_pgrid_w =           {
-                                        'name':'sems_solar_power',
-                                        'unit_of_meas':'W',
-                                        'value_template':'{{ value_json.pgrid_w }}',
-                                        'icon':'mdi:solar-power',
-                                        'state_topic':'sems/sensors',
-                                        'unique_id':'sems_solar_power_sensor',
-                                            'device':   {
-                                                        'identifiers':'Goodwe Inverter',
-                                                        'name':'GoodWe Inverter',
-                                                        'model':data['type'],
-                                                        'manufacturer':'GoodWe'
-                                                        }
-                                        }
-                payload_temperature =       {
-                                        'name':'sems_inverter_temperature',
-                                        'unit_of_meas':'°C',
-                                        'value_template':'{{ value_json.temperature }}',
-                                        'icon':'mdi:thermometer',
-                                        'state_topic':'sems/sensors',
-                                        'unique_id':'sems_inverter_temperature_sensor',
-                                            'device':   {
-                                                        'identifiers':'Goodwe Inverter',
-                                                        'name':'GoodWe Inverter',
-                                                        'model':data['type'],
-                                                        'manufacturer':'GoodWe'
-                                                        }
-                                        }
-                payload_eday_kwh =          {
-                                        'name':'sems_produced_today',
-                                        'unit_of_meas':'kWh',
-                                        'value_template':'{{ value_json.eday_kwh }}',
-                                        'icon':'mdi:flash',
-                                        'state_topic':'sems/sensors',
-                                        'unique_id':'sems_produced_today_sensor',
-                                            'device':   {
-                                                        'identifiers':'Goodwe Inverter',
-                                                        'name':'GoodWe Inverter',
-                                                        'model':data['type'],
-                                                        'manufacturer':'GoodWe'
-                                                        }
-                                        }
-                payload_etotal_kwh =        {
-                                        'name':'sems_produced_total',
-                                        'unit_of_meas':'kWh',
-                                        'value_template':'{{ value_json.etotal_kwh }}',
-                                        'icon':'mdi:flash',
-                                        'state_topic':'sems/sensors',
-                                        'unique_id':'sems_produced_total_sensor',
-                                            'device':   {
-                                                        'identifiers':'Goodwe Inverter',
-                                                        'name':'GoodWe Inverter',
-                                                        'model':data['type'],
-                                                        'manufacturer':'GoodWe'
-                                                        }
-                                        }
-                payload_emonth_kwh =        {
-                                        'name':'sems_produced_this_month',
-                                        'unit_of_meas':'kWh',
-                                        'value_template':'{{ value_json.emonth_kwh }}',
-                                        'icon':'mdi:flash',
-                                        'state_topic':'sems/sensors',
-                                        'unique_id':'sems_produced_this_month_sensor',
-                                            'device':   {
-                                                        'identifiers':'Goodwe Inverter',
-                                                        'name':'GoodWe Inverter',
-                                                        'model':data['type'],
-                                                        'manufacturer':'GoodWe'
-                                                        }
-                                        }
-                payload_grid_voltage =      {
-                                        'name':'sems_grid_voltage',
-                                        'unit_of_meas':'VAC',
-                                        'value_template':'{{ value_json.grid_voltage }}',
-                                        'icon':'mdi:current-ac',
-                                        'state_topic':'sems/sensors',
-                                        'unique_id':'sems_grid_voltage_sensor',
-                                            'device':   {
-                                                        'identifiers':'Goodwe Inverter',
-                                                        'name':'GoodWe Inverter',
-                                                        'model':data['type'],
-                                                        'manufacturer':'GoodWe'
-                                                        }
-                                        }
-                payload_grid_frequency =    {
-                                        'name':'sems_grid_frequency',
-                                        'unit_of_meas':'Hz',
-                                        'value_template':'{{ value_json.grid_frequency }}',
-                                        'icon':'mdi:current-ac',
-                                        'state_topic':'sems/sensors',
-                                        'unique_id':'sems_grid_frequency_sensor',
-                                            'device':   {
-                                                        'identifiers':'Goodwe Inverter',
-                                                        'name':'GoodWe Inverter',
-                                                        'model':data['type'],
-                                                        'manufacturer':'GoodWe'
-                                                        }
-                                        }
-                _LOGGER.debug("Updated sems data")
-            except Exception as exception:
-                _LOGGER.error("Unable to fetch data from SEMS. %s", exception)
-            else:
+            payload_type =          {
+                                    'name':'sems_inverter_type',
+                                    'value_template':'{{ value_json.type }}',
+                                    'icon':'mdi:solar-power',
+                                    'state_topic':'sems/sensors',
+                                    'unique_id':'sems_inverter_type_sensor',
+                                        'device':   {
+                                                    'identifiers':'Goodwe Inverter',
+                                                    'name':'GoodWe Inverter',
+                                                    'model':data['type'],
+                                                    'manufacturer':'GoodWe'
+                                                    }
+                                    }    
+            payload_status =            {
+                                    'name':'sems_inverter_status',
+                                    'value_template':'{{ value_json.status }}',
+                                    'icon':'mdi:lan-connect',
+                                    'state_topic':'sems/sensors',
+                                    'unique_id':'sems_inverter_status_sensor',
+                                        'device':   {
+                                                    'identifiers':'Goodwe Inverter',
+                                                    'name':'GoodWe Inverter',
+                                                    'model':data['type'],
+                                                    'manufacturer':'GoodWe'
+                                                    }
+                                    }
+            payload_pgrid_w =           {
+                                    'name':'sems_solar_power',
+                                    'unit_of_meas':'W',
+                                    'value_template':'{{ value_json.pgrid_w }}',
+                                    'icon':'mdi:solar-power',
+                                    'state_topic':'sems/sensors',
+                                    'unique_id':'sems_solar_power_sensor',
+                                        'device':   {
+                                                    'identifiers':'Goodwe Inverter',
+                                                    'name':'GoodWe Inverter',
+                                                    'model':data['type'],
+                                                    'manufacturer':'GoodWe'
+                                                    }
+                                    }
+            payload_temperature =       {
+                                    'name':'sems_inverter_temperature',
+                                    'unit_of_meas':'°C',
+                                    'value_template':'{{ value_json.temperature }}',
+                                    'icon':'mdi:thermometer',
+                                    'state_topic':'sems/sensors',
+                                    'unique_id':'sems_inverter_temperature_sensor',
+                                        'device':   {
+                                                    'identifiers':'Goodwe Inverter',
+                                                    'name':'GoodWe Inverter',
+                                                    'model':data['type'],
+                                                    'manufacturer':'GoodWe'
+                                                    }
+                                    }
+            payload_eday_kwh =          {
+                                    'name':'sems_produced_today',
+                                    'unit_of_meas':'kWh',
+                                    'value_template':'{{ value_json.eday_kwh }}',
+                                    'icon':'mdi:flash',
+                                    'state_topic':'sems/sensors',
+                                    'unique_id':'sems_produced_today_sensor',
+                                        'device':   {
+                                                    'identifiers':'Goodwe Inverter',
+                                                    'name':'GoodWe Inverter',
+                                                    'model':data['type'],
+                                                    'manufacturer':'GoodWe'
+                                                    }
+                                    }
+            payload_etotal_kwh =        {
+                                    'name':'sems_produced_total',
+                                    'unit_of_meas':'kWh',
+                                    'value_template':'{{ value_json.etotal_kwh }}',
+                                    'icon':'mdi:flash',
+                                    'state_topic':'sems/sensors',
+                                    'unique_id':'sems_produced_total_sensor',
+                                        'device':   {
+                                                    'identifiers':'Goodwe Inverter',
+                                                    'name':'GoodWe Inverter',
+                                                    'model':data['type'],
+                                                    'manufacturer':'GoodWe'
+                                                    }
+                                    }
+            payload_emonth_kwh =        {
+                                    'name':'sems_produced_this_month',
+                                    'unit_of_meas':'kWh',
+                                    'value_template':'{{ value_json.emonth_kwh }}',
+                                    'icon':'mdi:flash',
+                                    'state_topic':'sems/sensors',
+                                    'unique_id':'sems_produced_this_month_sensor',
+                                        'device':   {
+                                                    'identifiers':'Goodwe Inverter',
+                                                    'name':'GoodWe Inverter',
+                                                    'model':data['type'],
+                                                    'manufacturer':'GoodWe'
+                                                    }
+                                    }
+            payload_grid_voltage =      {
+                                    'name':'sems_grid_voltage',
+                                    'unit_of_meas':'VAC',
+                                    'value_template':'{{ value_json.grid_voltage }}',
+                                    'icon':'mdi:current-ac',
+                                    'state_topic':'sems/sensors',
+                                    'unique_id':'sems_grid_voltage_sensor',
+                                        'device':   {
+                                                    'identifiers':'Goodwe Inverter',
+                                                    'name':'GoodWe Inverter',
+                                                    'model':data['type'],
+                                                    'manufacturer':'GoodWe'
+                                                    }
+                                    }
+            payload_grid_frequency =    {
+                                    'name':'sems_grid_frequency',
+                                    'unit_of_meas':'Hz',
+                                    'value_template':'{{ value_json.grid_frequency }}',
+                                    'icon':'mdi:current-ac',
+                                    'state_topic':'sems/sensors',
+                                    'unique_id':'sems_grid_frequency_sensor',
+                                        'device':   {
+                                                    'identifiers':'Goodwe Inverter',
+                                                    'name':'GoodWe Inverter',
+                                                    'model':data['type'],
+                                                    'manufacturer':'GoodWe'
+                                                    }
+                                    }
+            _LOGGER.debug("Downloaded SEMS API data")
+        except Exception as exception:
+            _LOGGER.error("Unable to fetch from the SEMS API. %s", exception)
+        else:
+            if REGISTERED == 0:
                 for key,value in data.items():
                     if(key is not None and value is not None):
                         parameter = key
@@ -288,21 +286,9 @@ async def async_setup(hass, config):
                         payload = json.dumps(payload)
                         mqttc.publish('homeassistant/sensor/sems/{}/config'.format(parameter), payload, qos=0, retain=True)
             REGISTERED = 1
-        else:
-            """Get the latest data from the SEMS API and send to the MQTT Broker."""
-            try:
-                account = username
-                station = station_id
-                user = username
-
-                data = getCurrentReadings(station)
-                _LOGGER.debug("Updated sems data")
-            except Exception as exception:
-                _LOGGER.error("Unable to fetch data from SEMS. %s", exception)
-            else:
-                payload = json.dumps(data)
-                payload = payload.replace(": ", ":")
-                mqttc.publish('sems/sensors', payload, qos=0, retain=True)
+            payload = json.dumps(data)
+            payload = payload.replace(": ", ":")
+            mqttc.publish('sems/sensors', payload, qos=0, retain=True)
 
     async_track_time_interval(hass, async_get_sems_data, scan_interval)
 
