@@ -13,8 +13,8 @@ sems2mqtt:
   username: sems login (email)
   password: sems password
   station_id: your station ID
-  client: MQTT cient-id (default is 'sems2mqtt')
-  scan_interval: 150 #optional,default is 60 seconds
+  client: MQTT cient-id (optional, default is 'sems2mqtt')
+  scan_interval: 150 (optional, default is 300 seconds, keep to 300 seconds or less!)
 """
 
 import json
@@ -46,7 +46,7 @@ CONF_CLIENT = 'client'
 DEFAULT_CL = 'sems2mqtt'
 DOMAIN = 'sems2mqtt'
 REGISTERED = 0
-SCAN_INTERVAL = timedelta(seconds=60)
+SCAN_INTERVAL = timedelta(seconds=300)
 
 CONFIG_SCHEMA = vol.Schema({
     DOMAIN: vol.Schema({
@@ -76,7 +76,7 @@ async def async_setup(hass, config):
 
     client_id = client
     port = 1883
-    keepalive = 55
+    keepalive = 300
 
     mqttc = mqtt.Client(client_id, protocol=mqtt.MQTTv311)
     mqttc.username_pw_set(broker_user, password=broker_pw)
