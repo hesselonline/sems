@@ -22,7 +22,7 @@ sems2mqtt:
   client: sems2mqtt             (optional, MQTT cient-id, default is 'sems2mqtt')
   scan_interval: 150            (optional, default is 300 seconds, keep to 300 seconds or less!)
 ```
-* If you are using the SEMS Portal app on Android or IOS, it is strongly suggested to create a Visitor account with a different email adress and use the credentials of the Visitor account for this custom_component. In the Adroid app, a visitor account can be added on the 'Modify Plant Info' page, scroll down to the bottom of the page to find the 'add visitor'-button.
+* If you are using the SEMS Portal app on Android or IOS, it is strongly suggested to create a Visitor account with a different email address and use the credentials of the Visitor account for this custom_component. In the Adroid app, a visitor account can be added on the 'Modify Plant Info' page, scroll down to the bottom of the page to find the 'add visitor'-button.
 
 This component use MQTT-disovery to find the sensors. The various parameters collected from the API will be shown as separate sensors, not as one sensor with several attributes. The sensors will show up once one scan_interval has passed.
 
