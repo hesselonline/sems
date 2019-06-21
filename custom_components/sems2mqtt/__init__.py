@@ -104,7 +104,7 @@ async def async_setup(hass, config):
                     'temperature' : str(inverterData['tempperature']),
                     'eday_kwh' : str(inverterData['eday']),
                     'etotal_kwh' : str(inverterData['etotal']),
-                    'emonth_kwh' : str(inverterData['thismonthetotle']+inverterData['eday']),
+                    'emonth_kwh' : str(round(float(inverterData['thismonthetotle']+inverterData['eday']), 1)),
                     'grid_voltage' : str(inverterData['vac1']),
                     'grid_frequency' : str(inverterData['fac1'])
                     }
