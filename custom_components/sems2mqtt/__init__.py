@@ -24,6 +24,7 @@ from datetime import datetime, timedelta
 import requests
 import logging
 import voluptuous as vol
+import paho.mqtt.publish as publish
 import paho.mqtt.client as mqtt
 
 from homeassistant.const import (
@@ -33,7 +34,7 @@ from homeassistant.helpers.event import async_track_time_interval
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
 
-__version__ = '0.1.7'
+__version__ = '0.1.8'
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -75,18 +76,9 @@ async def async_setup(hass, config):
     scan_interval = conf.get(CONF_SCAN_INTERVAL)
 
     client_id = client
+    auth = {'username':broker_user, 'password':broker_pw}
     port = 1883
     keepalive = 300
-
-    mqttc = mqtt.Client(client_id, protocol=mqtt.MQTTv311)
-    mqttc.username_pw_set(broker_user, password=broker_pw)
-    mqttc.connect(broker, port=port, keepalive=keepalive)
-
-    async def async_stop_sems(event):
-        """Stop the SEMS MQTT component."""
-        mqttc.disconnect()
-
-    hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, async_stop_sems)
 
     async def async_get_sems_data(event_time):   
         """Get the topics from the SEMS API and send to the MQTT Broker."""
@@ -285,11 +277,11 @@ async def async_setup(hass, config):
                         payload = "payload_"+str(parameter)
                         payload = locals()[payload]
                         payload = json.dumps(payload)
-                        mqttc.publish('homeassistant/sensor/sems/{}/config'.format(parameter), payload, qos=0, retain=True)
+                        publish.single('homeassistant/sensor/sems/{}/config'.format(parameter), payload, qos=0, retain=True, hostname=broker, port=port, auth=auth, client_id=client, protocol=mqtt.MQTTv311)
             REGISTERED = 1
             payload = json.dumps(data)
             payload = payload.replace(": ", ":")
-            mqttc.publish('sems/sensors', payload, qos=0, retain=True)
+            publish.single('sems/sensors', payload, qos=0, retain=True, hostname=broker, port=port, auth=auth, client_id=client, protocol=mqtt.MQTTv311)
 
     async_track_time_interval(hass, async_get_sems_data, scan_interval)
 
