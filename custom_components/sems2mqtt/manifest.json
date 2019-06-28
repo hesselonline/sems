@@ -1,0 +1,8 @@
+{
+    "domain": "sems2mqtt",
+    "name": "Goodwe SEMS API to MQTT sensor",
+    "documentation": "https://github.com/bouwew/sems2mqtt",
+    "dependencies": [],
+    "codeowners": ["bouwew"],
+    "requirements": []
+  }
