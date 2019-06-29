@@ -91,7 +91,7 @@ async def async_setup(hass, config):
             inverterData = data['inverter'][0]['invert_full']
             result = {
                     'type'  : inverterData['model_type'],
-                    'status'  : status[inverterData['status'],'Unknown'],
+                    'status'  : status[inverterData['status']],
                     'pgrid_w' : str(inverterData['pac']),
                     'temperature' : str(inverterData['tempperature']),
                     'eday_kwh' : str(inverterData['eday']),
