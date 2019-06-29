@@ -91,7 +91,7 @@ async def async_setup(hass, config):
             inverterData = data['inverter'][0]['invert_full']
             result = {
                     'type'  : inverterData['model_type'],
-                    'status'  : status[inverterData['status']],
+                    'status'  : status[inverterData['status'],'Unknown'],
                     'pgrid_w' : str(inverterData['pac']),
                     'temperature' : str(inverterData['tempperature']),
                     'eday_kwh' : str(inverterData['eday']),
@@ -125,10 +125,10 @@ async def async_setup(hass, config):
                         base_url = data['api']
                         token = json.dumps(data['data'])
                 except requests.exceptions.RequestException as exp:
-                    print("warning")
+                    _LOGGER.warning(exp)
                 time.sleep(i ** 3)
             else:
-                print("Failed to call GoodWe API")
+                _LOGGER.error("Failed to call SEMS API")
 
             return {}
     
