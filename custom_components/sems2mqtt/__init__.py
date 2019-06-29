@@ -268,7 +268,7 @@ async def async_setup(hass, config):
                                     }
             _LOGGER.debug("Downloaded SEMS API data")
         except Exception as exception:
-            _LOGGER.error("Unable to fetch data from the SEMS API.)
+            _LOGGER.error("Unable to fetch data from the SEMS API,", exception, "not available")
         else:
             if REGISTERED == 0:
                 for key,value in data.items():
