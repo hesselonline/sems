@@ -85,7 +85,7 @@ async def async_setup(hass, config):
 
         def getCurrentReadings(station_id):
             ''' Download the most recent readings from the GoodWe API. '''
-            status = { -1 : 'Offline', 0 : 'Waiting', 1 : 'Online', None : "Unknown" }
+            status = { -1 : 'Offline', 0 : 'Waiting', 1 : 'Online', None : 'Unknown' }
             payload = {'powerStationId' : station_id}
             data = call("v1/PowerStation/GetMonitorDetailByPowerstationId", payload)
             inverterData = data['inverter'][0]['invert_full']
