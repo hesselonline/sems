@@ -126,7 +126,7 @@ async def async_setup(hass, config):
                         token = json.dumps(data['data'])
                 except requests.exceptions.RequestException as exp:
                     _LOGGER.warning(exp)
-                time.sleep(i ** 3)
+                time.sleep((2*i) ** 2)
             else:
                 _LOGGER.error("Failed to call SEMS API")
 
