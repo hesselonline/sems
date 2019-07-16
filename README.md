@@ -24,7 +24,7 @@ sems2mqtt:
 ```
 * If you are using the SEMS Portal app on Android or IOS, it is strongly suggested to create a Visitor account with a different email address and use the credentials of the Visitor account for this custom_component. In the Adroid app, a visitor account can be added on the 'Modify Plant Info' page, scroll down to the bottom of the page to find the 'add visitor'-button.
 
-This component use MQTT-disovery to find the sensors. The various parameters collected from the API will be shown as separate sensors, not as one sensor with several attributes. The sensors will show up once one scan_interval has passed.
+This component use MQTT-disovery to find the sensors. The various parameters collected from the API will be shown as separate sensors, not as one sensor with several attributes. When you have performed the MQTT discovery, via Configuration --> Integrations --> configure the new MQTT-item on the top of the page (if you have other MQTT-integrations and the new sensors do not show up, delete the existing MQTT-integrations, restart HA and perform the MQTT-integration again), you will need to restart HA.
 
 <br>
 Station ID can be found by logging on to the SEMS portal (part of URL after https://www.semsportal.com/PowerStation/PowerStatusSnMin/).
