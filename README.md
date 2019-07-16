@@ -8,7 +8,7 @@ NOTE: this component requires an MQTT-broker to be present in your network.
 There is one available in the Hassio Official Add-ons.
 
 Installation of this component is done by copying the files `__init__.py` and `manifest.json` to the
-[homeassistant_config]/custom_components/sems2mqtt folder.
+`[homeassistant_config]/custom_components/sems2mqtt` folder.
 
 In configuration.yaml add the custom_component as follows:
 ```
