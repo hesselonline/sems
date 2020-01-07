@@ -98,7 +98,9 @@ async def async_setup(hass, config):
                     'etotal_kwh' : str(inverterData['etotal']),
                     'emonth_kwh' : str(round(float(inverterData['thismonthetotle']+inverterData['eday']), 1)),
                     'grid_voltage' : str(inverterData['vac1']),
-                    'grid_frequency' : str(inverterData['fac1'])
+                    'grid_frequency' : str(inverterData['fac1']),
+                    'battery_soc' : str(inverterData['soc']),
+                    'battery_soh' : str(inverterData['soh'])
                     }
             
             return result
@@ -259,6 +261,34 @@ async def async_setup(hass, config):
                                     'icon':'mdi:current-ac',
                                     'state_topic':'sems/sensors',
                                     'unique_id':'sems_grid_frequency_sensor',
+                                        'device':   {
+                                                    'identifiers':'Goodwe Inverter',
+                                                    'name':'GoodWe Inverter',
+                                                    'model':data['type'],
+                                                    'manufacturer':'GoodWe'
+                                                    }
+                                    }
+            payload_battery_soc =       {
+                                    'name':'sems_battery_soc',
+                                    'unit_of_meas':'%',
+                                    'value_template':'{{ value_json.battery_soc }}',
+                                    'icon':'mdi:battery-charging',
+                                    'state_topic':'sems/sensors',
+                                    'unique_id':'sems_battery_soc_sensor',
+                                        'device':   {
+                                                    'identifiers':'Goodwe Inverter',
+                                                    'name':'GoodWe Inverter',
+                                                    'model':data['type'],
+                                                    'manufacturer':'GoodWe'
+                                                    }
+                                    }
+            payload_battery_soh =       {
+                                    'name':'sems_battery_soh',
+                                    'unit_of_meas':'%',
+                                    'value_template':'{{ value_json.battery_soh }}',
+                                    'icon':'mdi:medical-bag',
+                                    'state_topic':'sems/sensors',
+                                    'unique_id':'sems_battery_soh_sensor',
                                         'device':   {
                                                     'identifiers':'Goodwe Inverter',
                                                     'name':'GoodWe Inverter',
