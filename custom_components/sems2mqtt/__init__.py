@@ -81,11 +81,11 @@ async def async_setup(hass, config):
     async def async_get_sems_data(event_time):   
         """Get the topics from the SEMS API and send to the MQTT Broker."""
 
-        def getCurrentReadings(station_id):
+        async def getCurrentReadings(self, station_id):
             ''' Download the most recent readings from the GoodWe API. '''
             status = { -1 : 'Offline', 0 : 'Waiting', 1 : 'Online', None : 'Unknown' }
             payload = {'powerStationId' : station_id}
-            data = call("v1/PowerStation/GetMonitorDetailByPowerstationId", payload)
+            data = await call(self.hass, "v1/PowerStation/GetMonitorDetailByPowerstationId", payload)
             inverterData = data['inverter'][0]['invert_full']
             result = {
                     'type'  : inverterData['model_type'],
@@ -103,7 +103,7 @@ async def async_setup(hass, config):
             
             return result
 
-        def call(url, payload):
+        async def call(self, url, payload):
             token = '{"version":"","client":"web","language":"en"}'
             global_url = 'https://eu.semsportal.com/api/'
             base_url = global_url
@@ -111,7 +111,7 @@ async def async_setup(hass, config):
                 try:
                     headers = {'Token': token }
 
-                    r = await hass.async_add_executor_job(
+                    r = await self.async_add_executor_job(
                         requests.post(
                             base_url + url,
                             headers=headers,
@@ -126,7 +126,7 @@ async def async_setup(hass, config):
                         return data['data']
                     else:
                         loginPayload = { 'account': account, 'pwd': password }
-                        r = await hass.async_add_executor_job(
+                        r = await self.async_add_executor_job(
                             requests.post(
                                 global_url + 'v1/Common/CrossLogin',
                                 headers=headers,
@@ -138,7 +138,9 @@ async def async_setup(hass, config):
                         data = r.json()
                         base_url = data['api']
                         token = json.dumps(data['data'])
-                except requests.exceptions.RequestException as exp:
+                except await self.async_add_executor_job(
+                    requests.exceptions.RequestException
+                ) as exp:
                     _LOGGER.warning(exp)
                 time.sleep((2*i) ** 2)
             else:
