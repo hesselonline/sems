@@ -113,7 +113,14 @@ async def async_setup(hass, config):
                 try:
                     headers = {'Token': token }
 
-                    r = requests.post(base_url + url, headers=headers, data=payload, timeout=20)
+                    r = await hass.async_add_executor_job(
+                        requests.post(
+                            base_url + url,
+                            headers=headers,
+                            data=payload,
+                            timeout=20,
+                        )
+                    )
                     r.raise_for_status()
                     data = r.json()
 
@@ -121,7 +128,14 @@ async def async_setup(hass, config):
                         return data['data']
                     else:
                         loginPayload = { 'account': account, 'pwd': password }
-                        r = requests.post(global_url + 'v1/Common/CrossLogin', headers=headers, data=loginPayload, timeout=20)
+                        r = await hass.async_add_executor_job(
+                            requests.post(
+                                global_url + 'v1/Common/CrossLogin',
+                                headers=headers,
+                                data=loginPayload,
+                                timeout=20,
+                            )
+                        )
                         r.raise_for_status()
                         data = r.json()
                         base_url = data['api']
@@ -307,11 +321,35 @@ async def async_setup(hass, config):
                         payload = "payload_"+str(parameter)
                         payload = locals()[payload]
                         payload = json.dumps(payload)
-                        publish.single('homeassistant/sensor/sems/{}/config'.format(parameter), payload, qos=0, retain=True, hostname=broker, port=port, auth=auth, client_id=client, protocol=mqtt.MQTTv311)
+                        await hass.async_add_executor_job(
+                            publish.single(
+                                'homeassistant/sensor/sems/{}/config'.format(parameter),
+                                payload,
+                                qos=0,
+                                retain=True,
+                                hostname=broker,
+                                port=port,
+                                auth=auth,
+                                client_id=client,
+                                protocol=mqtt.MQTTv311,
+                            )
+                        )
             REGISTERED = 1
             payload = json.dumps(data)
             payload = payload.replace(": ", ":")
-            publish.single('sems/sensors', payload, qos=0, retain=True, hostname=broker, port=port, auth=auth, client_id=client, protocol=mqtt.MQTTv311)
+            await hass.async_add_executor_job(
+                publish.single(
+                    'sems/sensors',
+                    payload,
+                    qos=0,
+                    retain=True,
+                    hostname=broker,
+                    port=port,
+                    auth=auth,
+                    client_id=client,
+                    protocol=mqtt.MQTTv311,
+                )
+            )
 
     async_track_time_interval(hass, async_get_sems_data, scan_interval)
 
