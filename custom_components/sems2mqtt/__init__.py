@@ -78,7 +78,7 @@ async def async_setup(hass, config):
     port = 1883
     keepalive = 300
 
-    async def async_get_sems_data(event_time):   
+    async def async_get_sems_data(self, event_time):   
         """Get the topics from the SEMS API and send to the MQTT Broker."""
 
         async def getCurrentReadings(self, station_id):
@@ -156,7 +156,7 @@ async def async_setup(hass, config):
             station = station_id
             user = username
 
-            data = getCurrentReadings(station)
+            data = await getCurrentReadings(self, station)
 
             payload_type =          {
                                     'name':'sems_inverter_type',
