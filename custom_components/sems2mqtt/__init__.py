@@ -83,25 +83,32 @@ async def async_setup(hass, config):
 
         async def getCurrentReadings(station_id):
             ''' Download the most recent readings from the GoodWe API. '''
-            status = { -1 : 'Offline', 0 : 'Waiting', 1 : 'Online', None : 'Unknown' }
+            status = { -1 : 'Offline', 0 : 'Waiting', 1 : 'Online' }
             payload = {'powerStationId' : station_id}
-            data = await call("v1/PowerStation/GetMonitorDetailByPowerstationId", payload)
+            data = await call(
+                "v1/PowerStation/GetMonitorDetailByPowerstationId",
+                payload,
+            )
             inverterData = data['inverter'][0]['invert_full']
             result = {
-                    'type'  : inverterData['model_type'],
-                    'status'  : status[inverterData['status']],
-                    'pgrid_w' : str(inverterData['pac']),
-                    'temperature' : str(inverterData['tempperature']),
-                    'eday_kwh' : str(inverterData['eday']),
-                    'etotal_kwh' : str(inverterData['etotal']),
-                    'emonth_kwh' : str(
-                        round(float(inverterData['thismonthetotle']+inverterData['eday']), 1)
-                    ),
-                    'grid_voltage' : str(inverterData['vac1']),
-                    'grid_frequency' : str(inverterData['fac1']),
-                    'battery_soc' : str(inverterData['soc']),
-                    'battery_soh' : str(inverterData['soh'])
-                    }
+                'type': inverterData.get('model_type'),
+                'status': status.get(inverterData.get('status'),'Unknown'),
+                'pgrid_w': str(inverterData.get('pac')),
+                'temperature': str(inverterData.get('tempperature')),
+                'eday_kwh': str(inverterData.get('eday')),
+                'etotal_kwh': str(inverterData.get('etotal')),
+                'emonth_kwh': str(
+                    round(
+                        float(
+                            inverterData.get('thismonthetotle')
+                            + inverterData.get('eday')
+                        ), 1)
+                ),
+                'grid_voltage' : str(inverterData.get('vac1')),
+                'grid_frequency' : str(inverterData.get('fac1')),
+                'battery_soc' : str(inverterData.get('soc')),
+                'battery_soh' : str(inverterData.get('soh'))
+            }
             
             return result
 
