@@ -153,7 +153,7 @@ async def async_setup(hass, config):
                     _LOGGER.warning(exp)
                 time.sleep((2*i) ** 2)
             else:
-                _LOGGER.error("Failed to call SEMS API")
+                _LOGGER.error("Failed to obtain data from the SEMS API")
                 return {}
 
         def create_device(model):
@@ -164,7 +164,7 @@ async def async_setup(hass, config):
                 'manufacturer':'GoodWe'
             }
 
-        _LOGGER.debug("update called.")
+        # body of async_get_sems_data()
         global REGISTERED
         try:
             account = username
@@ -270,7 +270,7 @@ async def async_setup(hass, config):
                 'unique_id':'sems_battery_soh_sensor',
                     'device': create_device(data['type'])
             }
-            _LOGGER.debug("Downloaded SEMS API data")
+
         except Exception as exception:
             _LOGGER.error(
                 "Unable to fetch data from the SEMS API,",
