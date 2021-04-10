@@ -79,7 +79,7 @@ async def async_setup(hass, config):
     keepalive = 300
 
     async def async_get_sems_data(event_time):   
-        """Get the topics from the SEMS API and send to the MQTT Broker."""
+        """Get the topics from the SEMS API and send the corresponding sensor-data to the MQTT Broker."""
 
         async def getCurrentReadings(station_id):
             ''' Download the most recent readings from the GoodWe API. '''
@@ -151,16 +151,11 @@ async def async_setup(hass, config):
                     requests.exceptions.RequestException
                 ) as exp:
                     _LOGGER.warning(exp)
-
                 time.sleep((2*i) ** 2)
-
             else:
                 _LOGGER.error("Failed to call SEMS API")
                 return {}
-    
-        """Get the topic-data from the SEMS API and send to the MQTT Broker."""
-        _LOGGER.debug("update called.")
-        
+
         def create_device(model):
             return { 
                 'identifiers':'Goodwe Inverter',
@@ -169,6 +164,7 @@ async def async_setup(hass, config):
                 'manufacturer':'GoodWe'
             }
 
+        _LOGGER.debug("update called.")
         global REGISTERED
         try:
             account = username
