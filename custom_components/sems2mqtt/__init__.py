@@ -160,6 +160,15 @@ async def async_setup(hass, config):
     
         """Get the topic-data from the SEMS API and send to the MQTT Broker."""
         _LOGGER.debug("update called.")
+        
+        def create_device(model):
+            return { 
+                'identifiers':'Goodwe Inverter',
+                'name':'GoodWe Inverter',
+                'model':model,
+                'manufacturer':'GoodWe'
+            }
+
         global REGISTERED
         try:
             account = username
@@ -174,12 +183,7 @@ async def async_setup(hass, config):
                 'icon':'mdi:solar-power',
                 'state_topic':'sems/sensors',
                 'unique_id':'sems_inverter_type_sensor',
-                    'device': {
-                        'identifiers':'Goodwe Inverter',
-                        'name':'GoodWe Inverter',
-                        'model':data['type'],
-                        'manufacturer':'GoodWe'
-                    }
+                    'device': create_device(data['type'])
             }  
             payload_status = {
                 'name':'sems_inverter_status',
@@ -187,12 +191,7 @@ async def async_setup(hass, config):
                 'icon':'mdi:lan-connect',
                 'state_topic':'sems/sensors',
                 'unique_id':'sems_inverter_status_sensor',
-                    'device': {
-                        'identifiers':'Goodwe Inverter',
-                        'name':'GoodWe Inverter',
-                        'model':data['type'],
-                        'manufacturer':'GoodWe'
-                    }
+                    'device': create_device(data['type'])
             }
             payload_pgrid_w = {
                 'name':'sems_solar_power',
@@ -201,12 +200,7 @@ async def async_setup(hass, config):
                 'icon':'mdi:solar-power',
                 'state_topic':'sems/sensors',
                 'unique_id':'sems_solar_power_sensor',
-                    'device': {
-                        'identifiers':'Goodwe Inverter',
-                        'name':'GoodWe Inverter',
-                        'model':data['type'],
-                        'manufacturer':'GoodWe'
-                    }
+                    'device': create_device(data['type'])
             }
             payload_temperature = {
                 'name':'sems_inverter_temperature',
@@ -215,12 +209,7 @@ async def async_setup(hass, config):
                 'icon':'mdi:thermometer',
                 'state_topic':'sems/sensors',
                 'unique_id':'sems_inverter_temperature_sensor',
-                    'device': {
-                        'identifiers':'Goodwe Inverter',
-                        'name':'GoodWe Inverter',
-                        'model':data['type'],
-                        'manufacturer':'GoodWe'
-                    }
+                    'device': create_device(data['type'])
             }
             payload_eday_kwh = {
                 'name':'sems_produced_today',
@@ -229,12 +218,7 @@ async def async_setup(hass, config):
                 'icon':'mdi:flash',
                 'state_topic':'sems/sensors',
                 'unique_id':'sems_produced_today_sensor',
-                    'device': {
-                        'identifiers':'Goodwe Inverter',
-                        'name':'GoodWe Inverter',
-                        'model':data['type'],
-                        'manufacturer':'GoodWe'
-                    }
+                    'device': create_device(data['type'])
             }
             payload_etotal_kwh = {
                 'name':'sems_produced_total',
@@ -243,12 +227,7 @@ async def async_setup(hass, config):
                 'icon':'mdi:flash',
                 'state_topic':'sems/sensors',
                 'unique_id':'sems_produced_total_sensor',
-                    'device': {
-                        'identifiers':'Goodwe Inverter',
-                        'name':'GoodWe Inverter',
-                        'model':data['type'],
-                        'manufacturer':'GoodWe'
-                    }
+                    'device': create_device(data['type'])
             }
             payload_emonth_kwh = {
                 'name':'sems_produced_this_month',
@@ -257,12 +236,7 @@ async def async_setup(hass, config):
                 'icon':'mdi:flash',
                 'state_topic':'sems/sensors',
                 'unique_id':'sems_produced_this_month_sensor',
-                    'device': {
-                        'identifiers':'Goodwe Inverter',
-                        'name':'GoodWe Inverter',
-                        'model':data['type'],
-                        'manufacturer':'GoodWe'
-                    }
+                    'device': create_device(data['type'])
             }
             payload_grid_voltage = {
                 'name':'sems_grid_voltage',
@@ -271,12 +245,7 @@ async def async_setup(hass, config):
                 'icon':'mdi:current-ac',
                 'state_topic':'sems/sensors',
                 'unique_id':'sems_grid_voltage_sensor',
-                    'device': {
-                        'identifiers':'Goodwe Inverter',
-                        'name':'GoodWe Inverter',
-                        'model':data['type'],
-                        'manufacturer':'GoodWe'
-                    }
+                    'device': create_device(data['type'])
             }
             payload_grid_frequency = {
                 'name':'sems_grid_frequency',
@@ -285,12 +254,7 @@ async def async_setup(hass, config):
                 'icon':'mdi:current-ac',
                 'state_topic':'sems/sensors',
                 'unique_id':'sems_grid_frequency_sensor',
-                    'device': {
-                        'identifiers':'Goodwe Inverter',
-                        'name':'GoodWe Inverter',
-                        'model':data['type'],
-                        'manufacturer':'GoodWe'
-                    }
+                    'device': create_device(data['type'])
             }
             payload_battery_soc = {
                 'name':'sems_battery_soc',
@@ -299,12 +263,7 @@ async def async_setup(hass, config):
                 'icon':'mdi:battery-charging',
                 'state_topic':'sems/sensors',
                 'unique_id':'sems_battery_soc_sensor',
-                    'device': {
-                        'identifiers':'Goodwe Inverter',
-                        'name':'GoodWe Inverter',
-                        'model':data['type'],
-                        'manufacturer':'GoodWe'
-                    }
+                    'device': create_device(data['type'])
             }
             payload_battery_soh = {
                 'name':'sems_battery_soh',
@@ -313,12 +272,7 @@ async def async_setup(hass, config):
                 'icon':'mdi:medical-bag',
                 'state_topic':'sems/sensors',
                 'unique_id':'sems_battery_soh_sensor',
-                    'device': {
-                        'identifiers':'Goodwe Inverter',
-                        'name':'GoodWe Inverter',
-                        'model':data['type'],
-                        'manufacturer':'GoodWe'
-                    }
+                    'device': create_device(data['type'])
             }
             _LOGGER.debug("Downloaded SEMS API data")
         except Exception as exception:
