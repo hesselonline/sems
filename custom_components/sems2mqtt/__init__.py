@@ -128,7 +128,7 @@ async def async_setup(hass, config):
         def issuePost(url, headers, payload, timeout):
             return requests.post(url, headers=headers, data=payload, timeout=timeout)
         
-        def issueException:
+        def issueException():
             return requests.exceptions.RequestException
 
         async def call(url, payload):
