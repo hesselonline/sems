@@ -161,7 +161,6 @@ async def async_setup(hass, config):
                                 headers,
                                 loginPayload,
                                 20,
-                            )
                         )
                         r.raise_for_status()
                         data = r.json()
