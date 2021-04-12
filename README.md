@@ -1,5 +1,5 @@
 ***UPDATE***: I no longer own a GoodWe solar inverter but I am happy to maintain this code. 
-Just let me know by creating a Pull request or an Issue, or start a Discussion.
+Just let me know what needs to change, by creating a Pull request or an Issue, or start a Discussion.
 
 
 # GoodWe SEMS Portal MQTT Component for Home Assistant
