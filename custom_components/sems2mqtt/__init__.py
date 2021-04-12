@@ -78,7 +78,8 @@ async def async_setup(hass, config):
     port = 1883
     keepalive = 300
     
-    def issue_pub_single(topic, payload, broker, port, auth, client)
+    def issue_pub_single(topic, payload, broker, port, auth, client):
+        """ Helper function for publish.single."""
         return publish.single(
             topic,
             payload,
@@ -126,9 +127,11 @@ async def async_setup(hass, config):
             return result
 
         def issuePost(url, headers, payload, timeout):
+            """Helper function for request.post()."""
             return requests.post(url, headers=headers, data=payload, timeout=timeout)
         
         def issueException():
+            """Helper function for requests.exceptions."""
             return requests.exceptions.RequestException
 
         async def call(url, payload):
@@ -138,7 +141,6 @@ async def async_setup(hass, config):
             for i in range(1, 4):
                 try:
                     headers = {'Token': token }
-
                     r = await hass.async_add_executor_job(
                         issuePost,
                         base_url + url,
