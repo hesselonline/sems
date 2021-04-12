@@ -119,7 +119,12 @@ async def async_setup(hass, config):
                         ), 1)
                 ),
                 'grid_voltage' : str(inverterData.get('vac1')),
+                'grid_current' : str(inverterData['iac1']),
                 'grid_frequency' : str(inverterData.get('fac1')),
+                'dc_voltage_str_1' : str(inverterData.get('vpv1')),
+                'dc_current_str_1' : str(inverterData.get('ipv1')),
+                'dc_voltage_str_2' : str(inverterData.get('vpv2')),
+                'dc_current_str_2' : str(inverterData.get('ipv2')),
                 'battery_soc' : str(inverterData.get('soc')),
                 'battery_soh' : str(inverterData.get('soh'))
             }
@@ -260,6 +265,15 @@ async def async_setup(hass, config):
                 'unique_id':'sems_grid_voltage_sensor',
                     'device': create_device(data['type'])
             }
+            payload_grid_current = {
+                'name':'sems_grid_current',
+                'unit_of_meas':'IAC',
+                'value_template':'{{ value_json.grid_current }}',
+                'icon':'mdi:current-ac',
+                'state_topic':'sems/sensors',
+                'unique_id':'sems_grid_current_sensor',
+                    'device': create_device(data['type'])
+            }
             payload_grid_frequency = {
                 'name':'sems_grid_frequency',
                 'unit_of_meas':'Hz',
@@ -267,6 +281,42 @@ async def async_setup(hass, config):
                 'icon':'mdi:current-ac',
                 'state_topic':'sems/sensors',
                 'unique_id':'sems_grid_frequency_sensor',
+                    'device': create_device(data['type'])
+            }
+            payload_str_1_voltage = {
+                'name':'sems_str_1_voltage',
+                'unit_of_meas':'VDC',
+                'value_template':'{{ value_json.dc_voltage_str_1 }}',
+                'icon':'mdi:current-dc',
+                'state_topic':'sems/sensors',
+                'unique_id':'sems_str_1_voltage_sensor',
+                    'device': create_device(data['type'])
+            }
+            payload_str_1_current = {
+                'name':'sems_str_1_current',
+                'unit_of_meas':'VDC',
+                'value_template':'{{ value_json.dc_current_str_1 }}',
+                'icon':'mdi:current-dc',
+                'state_topic':'sems/sensors',
+                'unique_id':'sems_str_1_current_sensor',
+                    'device': create_device(data['type'])
+            }
+            payload_str_2_voltage = {
+                'name':'sems_str_2_voltage',
+                'unit_of_meas':'VDC',
+                'value_template':'{{ value_json.dc_voltage_str_2 }}',
+                'icon':'mdi:current-dc',
+                'state_topic':'sems/sensors',
+                'unique_id':'sems_str_2_voltage_sensor',
+                    'device': create_device(data['type'])
+            }
+            payload_str_2_current = {
+                'name':'sems_str_2_current',
+                'unit_of_meas':'VDC',
+                'value_template':'{{ value_json.dc_current_str_2 }}',
+                'icon':'mdi:current-dc',
+                'state_topic':'sems/sensors',
+                'unique_id':'sems_str_2_current_sensor',
                     'device': create_device(data['type'])
             }
             payload_battery_soc = {
