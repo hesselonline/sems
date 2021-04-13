@@ -100,7 +100,7 @@ async def async_setup(hass, config):
             status = { -1 : 'Offline', 0 : 'Waiting', 1 : 'Online' }
             payload = {'powerStationId' : station_id}
             data = await call(
-                "v1/PowerStation/GetMonitorDetailByPowerstationId",
+                "v2/PowerStation/GetMonitorDetailByPowerstationId",
                 payload,
             )
             inverterData = data['inverter'][0]['invert_full']
@@ -162,7 +162,7 @@ async def async_setup(hass, config):
                         loginPayload = { 'account': account, 'pwd': password }
                         r = await hass.async_add_executor_job(
                                 issuePost,
-                                global_url + 'v1/Common/CrossLogin',
+                                global_url + 'v2/Common/CrossLogin',
                                 headers,
                                 loginPayload,
                                 20,
