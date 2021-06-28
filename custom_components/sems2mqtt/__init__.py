@@ -283,7 +283,7 @@ async def async_setup(hass, config):
                 'unique_id':'sems_grid_frequency_sensor',
                     'device': create_device(data['type'])
             }
-            payload_str_1_voltage = {
+            payload_dc_voltage_str_1 = {
                 'name':'sems_str_1_voltage',
                 'unit_of_meas':'VDC',
                 'value_template':'{{ value_json.dc_voltage_str_1 }}',
@@ -292,7 +292,7 @@ async def async_setup(hass, config):
                 'unique_id':'sems_str_1_voltage_sensor',
                     'device': create_device(data['type'])
             }
-            payload_str_1_current = {
+            payload_dc_current_str_1 = {
                 'name':'sems_str_1_current',
                 'unit_of_meas':'VDC',
                 'value_template':'{{ value_json.dc_current_str_1 }}',
@@ -301,7 +301,7 @@ async def async_setup(hass, config):
                 'unique_id':'sems_str_1_current_sensor',
                     'device': create_device(data['type'])
             }
-            payload_str_2_voltage = {
+            payload_dc_voltage_str_2 = {
                 'name':'sems_str_2_voltage',
                 'unit_of_meas':'VDC',
                 'value_template':'{{ value_json.dc_voltage_str_2 }}',
@@ -310,7 +310,7 @@ async def async_setup(hass, config):
                 'unique_id':'sems_str_2_voltage_sensor',
                     'device': create_device(data['type'])
             }
-            payload_str_2_current = {
+            payload_dc_current_str_2 = {
                 'name':'sems_str_2_current',
                 'unit_of_meas':'VDC',
                 'value_template':'{{ value_json.dc_current_str_2 }}',
