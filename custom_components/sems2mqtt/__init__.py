@@ -247,6 +247,7 @@ async def async_setup(hass, config):
                 'state_class': "measurement",
                 'last_reset_value_template':'1970-01-01T00:00:00+00:00',
                 'last_reset_topic':'sems/sensors',
+                'device_class': 'energy',
                 'unique_id':'sems_produced_total_sensor',
                     'device': create_device(data['type'])
             }
