@@ -244,9 +244,7 @@ async def async_setup(hass, config):
                 'value_template':'{{ value_json.etotal_kwh }}',
                 'icon':'mdi:flash',
                 'state_topic':'sems/sensors',
-                'state_class': "measurement",
-                'last_reset_value_template':'1970-01-01T00:00:00+00:00',
-                'last_reset_topic':'sems/sensors',
+                'state_class': "total_increasing",
                 'device_class': 'energy',
                 'unique_id':'sems_produced_total_sensor',
                     'device': create_device(data['type'])
