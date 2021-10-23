@@ -27,6 +27,17 @@ import voluptuous as vol
 import paho.mqtt.publish as publish
 import paho.mqtt.client as mqtt
 
+from homeassistant.components.sensor import (
+    DEVICE_CLASS_BATTERY,
+    DEVICE_CLASS_CURRENT,
+    DEVICE_CLASS_ENERGY,
+    DEVICE_CLASS_POWER,
+    DEVICE_CLASS_TEMPERATURE,
+    DEVICE_CLASS_VOLTAGE,
+    STATE_CLASS_MEASUREMENT,
+    STATE_CLASS_TOTAL,
+    STATE_CLASS_TOTAL_INCREASING,
+)
 from homeassistant.const import (
     CONF_PASSWORD, CONF_USERNAME, 
     CONF_SCAN_INTERVAL, EVENT_HOMEASSISTANT_STOP)
@@ -217,6 +228,8 @@ async def async_setup(hass, config):
                 'value_template':'{{ value_json.pgrid_w }}',
                 'icon':'mdi:solar-power',
                 'state_topic':'sems/sensors',
+                'state_class': STATE_CLASS_MEASUREMENT,
+                'device_class': DEVICE_CLASS_POWER,
                 'unique_id':'sems_solar_power_sensor',
                     'device': create_device(data['type'])
             }
@@ -226,6 +239,8 @@ async def async_setup(hass, config):
                 'value_template':'{{ value_json.temperature }}',
                 'icon':'mdi:thermometer',
                 'state_topic':'sems/sensors',
+                'state_class': STATE_CLASS_MEASUREMENT,
+                'device_class': DEVICE_CLASS_TEMPERATURE,
                 'unique_id':'sems_inverter_temperature_sensor',
                     'device': create_device(data['type'])
             }
@@ -235,6 +250,8 @@ async def async_setup(hass, config):
                 'value_template':'{{ value_json.eday_kwh }}',
                 'icon':'mdi:flash',
                 'state_topic':'sems/sensors',
+                'state_class': STATE_CLASS_TOTAL,
+                'device_class': DEVICE_CLASS_ENERGY,
                 'unique_id':'sems_produced_today_sensor',
                     'device': create_device(data['type'])
             }
@@ -244,8 +261,8 @@ async def async_setup(hass, config):
                 'value_template':'{{ value_json.etotal_kwh }}',
                 'icon':'mdi:flash',
                 'state_topic':'sems/sensors',
-                'state_class': "total_increasing",
-                'device_class': 'energy',
+                'state_class': STATE_CLASS_TOTAL_INCREASING,
+                'device_class': DEVICE_CLASS_ENERGY,
                 'unique_id':'sems_produced_total_sensor',
                     'device': create_device(data['type'])
             }
@@ -255,6 +272,8 @@ async def async_setup(hass, config):
                 'value_template':'{{ value_json.emonth_kwh }}',
                 'icon':'mdi:flash',
                 'state_topic':'sems/sensors',
+                'state_class': STATE_CLASS_TOTAL,
+                'device_class': DEVICE_CLASS_ENERGY,
                 'unique_id':'sems_produced_this_month_sensor',
                     'device': create_device(data['type'])
             }
@@ -264,6 +283,8 @@ async def async_setup(hass, config):
                 'value_template':'{{ value_json.grid_voltage }}',
                 'icon':'mdi:current-ac',
                 'state_topic':'sems/sensors',
+                'state_class': STATE_CLASS_MEASUREMENT,
+                'device_class': DEVICE_CLASS_VOLTAGE,
                 'unique_id':'sems_grid_voltage_sensor',
                     'device': create_device(data['type'])
             }
@@ -273,6 +294,8 @@ async def async_setup(hass, config):
                 'value_template':'{{ value_json.grid_current }}',
                 'icon':'mdi:current-ac',
                 'state_topic':'sems/sensors',
+                'state_class': STATE_CLASS_MEASUREMENT,
+                'device_class': DEVICE_CLASS_CURRENT,
                 'unique_id':'sems_grid_current_sensor',
                     'device': create_device(data['type'])
             }
@@ -282,6 +305,8 @@ async def async_setup(hass, config):
                 'value_template':'{{ value_json.grid_frequency }}',
                 'icon':'mdi:current-ac',
                 'state_topic':'sems/sensors',
+                'state_class': STATE_CLASS_MEASUREMENT,
+                'device_class': None,
                 'unique_id':'sems_grid_frequency_sensor',
                     'device': create_device(data['type'])
             }
@@ -291,6 +316,8 @@ async def async_setup(hass, config):
                 'value_template':'{{ value_json.dc_voltage_str_1 }}',
                 'icon':'mdi:current-dc',
                 'state_topic':'sems/sensors',
+                'state_class': STATE_CLASS_MEASUREMENT,
+                'device_class': DEVICE_CLASS_VOLTAGE,
                 'unique_id':'sems_str_1_voltage_sensor',
                     'device': create_device(data['type'])
             }
@@ -300,6 +327,8 @@ async def async_setup(hass, config):
                 'value_template':'{{ value_json.dc_current_str_1 }}',
                 'icon':'mdi:current-dc',
                 'state_topic':'sems/sensors',
+                'state_class': STATE_CLASS_MEASUREMENT,
+                'device_class': DEVICE_CLASS_CURRENT,
                 'unique_id':'sems_str_1_current_sensor',
                     'device': create_device(data['type'])
             }
@@ -309,6 +338,8 @@ async def async_setup(hass, config):
                 'value_template':'{{ value_json.dc_voltage_str_2 }}',
                 'icon':'mdi:current-dc',
                 'state_topic':'sems/sensors',
+                'state_class': STATE_CLASS_MEASUREMENT,
+                'device_class': DEVICE_CLASS_VOLTAGE,
                 'unique_id':'sems_str_2_voltage_sensor',
                     'device': create_device(data['type'])
             }
@@ -318,6 +349,8 @@ async def async_setup(hass, config):
                 'value_template':'{{ value_json.dc_current_str_2 }}',
                 'icon':'mdi:current-dc',
                 'state_topic':'sems/sensors',
+                'state_class': STATE_CLASS_MEASUREMENT,
+                'device_class': DEVICE_CLASS_CURRENT,
                 'unique_id':'sems_str_2_current_sensor',
                     'device': create_device(data['type'])
             }
@@ -327,6 +360,8 @@ async def async_setup(hass, config):
                 'value_template':'{{ value_json.battery_soc }}',
                 'icon':'mdi:battery-charging',
                 'state_topic':'sems/sensors',
+                'state_class': STATE_CLASS_MEASUREMENT,
+                'device_class': DEVICE_CLASS_BATTERY,
                 'unique_id':'sems_battery_soc_sensor',
                     'device': create_device(data['type'])
             }
@@ -336,6 +371,8 @@ async def async_setup(hass, config):
                 'value_template':'{{ value_json.battery_soh }}',
                 'icon':'mdi:medical-bag',
                 'state_topic':'sems/sensors',
+                'state_class': STATE_CLASS_MEASUREMENT,
+                'device_class': None,
                 'unique_id':'sems_battery_soh_sensor',
                     'device': create_device(data['type'])
             }
